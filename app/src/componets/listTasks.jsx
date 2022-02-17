@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import '../styles/listTasks.css';
 
 export default function ListTasks() {
   const [tasks, setTasks] = useState([]);
@@ -46,23 +47,25 @@ export default function ListTasks() {
   }
 
   return (
-    <div>
-      <h1>Lista de Tarefas:</h1>
-      <ul>
-        {
-          tasks && tasks.map(task => <li key={ `${task._id}` }>
-              { task.task }
-            </li>
-          )
-        }
-      </ul>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Tarefa:
-          <input type="text" value={newTask} onChange={ handleChange } />
-        </label>
-        <input type="submit" value='Inserir Tarefa' />
-      </form>
+    <div id='container-task'>
+      <div id='task-list'>
+        <h1>Lista de Tarefas:</h1>
+        <ul>
+          {
+            tasks && tasks.map(task => <li key={ `${task._id}` }>
+                { task.task }
+              </li>
+            )
+          }
+        </ul>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Tarefa:
+            <input type="text" value={newTask} onChange={ handleChange } />
+          </label>
+          <input type="submit" value='Inserir Tarefa' />
+        </form>
+      </div>
     </div>
   )
 }
