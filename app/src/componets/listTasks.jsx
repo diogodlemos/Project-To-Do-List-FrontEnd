@@ -3,7 +3,7 @@ import '../styles/listTasks.css';
 
 export default function ListTasks() {
   const [tasks, setTasks] = useState([]);
-  const [taskPost, setTaskPost] = useState('');
+  const [reload, setReload] = useState(false);
   const [newTask, setNewTask] = useState('');
   useEffect(() => {
     const fetchData = async () => {
@@ -13,38 +13,37 @@ export default function ListTasks() {
         cache: 'default'
       });
       const task = await response.json();
-      setTasks(task);
-      
+      setTasks(task);      
     };
     fetchData();
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('http://localhost:3001/task', {
-        method: 'POST',
-        body: JSON.stringify({
-          tasks: taskPost,
-        }),
-        headers: 'Content-type": "application/json; charset=UTF-8',
-        mode: 'cors',
-        cache: 'default'
-      });
-      const task = await response.json();
-      setTasks(task);
-      
-    };
-    fetchData();
-  }, [taskPost]);
+    fetch('http://localhost:3001/task')
+      .then((response) => response.json())
+      .then((newsTasks) => setTasks(newsTasks));
+      setNewTask('');
+  }, [reload]);
 
   const handleChange = ({ target }) => {
     setNewTask(target.value);
   }
 
-  const handleSubmit = (event) =>  {
+  const handleSubmit = async (event) =>  {
     event.preventDefault();
-    setTaskPost(newTask);
-  }
+    await fetch('http://localhost:3001/task', {
+        method: 'POST',
+        body: JSON.stringify({
+          task: newTask,
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+        mode: 'cors',
+        cache: 'default'
+      });
+      setReload((prevState) => !prevState);
+    };
 
   return (
     <div id='container-task'>
@@ -52,7 +51,7 @@ export default function ListTasks() {
         <h1>Lista de Tarefas:</h1>
         <ul>
           {
-            tasks && tasks.map(task => <li key={ `${task._id}` }>
+            (tasks) && tasks.map(task => <li key={ `${task._id}` }>
                 { task.task }
               </li>
             )
